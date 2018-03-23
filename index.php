@@ -1,3 +1,9 @@
+<?php
+$bd=("host=localhost port=5432 dbname=dbpoireau_ok user=marjorie password=greenday2511");
+$connect=pg_connect($bd);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +15,7 @@
       crossorigin="anonymous">
    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
    <link rel="stylesheet" href="style.css">
-   <title>Document</title>
+   <title>Fruit/légumes</title>
 </head>
 
 <body>
@@ -55,18 +61,35 @@
                      </tr>
                   </thead>
                   <tbody>
+
+                  <?php
+                        $allstock=pg_query("SELECT pro_nom, sum(st) 
+                        FROM (SELECT pro_leg,pro_nom, -sto_qte as st
+                        FROM stock
+                        INNER JOIN produit ON pro_id=spro_id
+                        WHERE sto_pert = True
+                        UNION
+                        SELECT pro_leg, pro_nom, sto_qte as st
+                        FROM stock
+                        INNER JOIN produit ON pro_id=spro_id
+                        WHERE sto_pert = False
+                        UNION 
+                        SELECT pro_leg, pro_nom, -con_qte as st
+                        FROM contenu
+                        INNER JOIN produit ON cpro_id = pro_id) as s
+                        GROUP BY pro_leg,pro_nom
+                        ORDER BY  pro_leg,pro_nom;");
+
+                        while($allstock_res=pg_fetch_array($allstock));{
+
+                  ?>
                      <tr>
-                        <td class="name-row">Pommes de terre</td>
-                        <td>100</td>
+                        <td class="name-row"><?php echo ($allstock_res['pro_nom']); ?></td>
+                        <td class="name-row"><?php echo ($allstock_res['st']); ?></td>
+                        
+                        <?php } ?>
                      </tr>
-                     <tr>
-                        <td class="name-row">Fraises</td>
-                        <td>10</td>
-                     </tr>
-                     <tr>
-                        <td class="name-row">Poires</td>
-                        <td>50</td>
-                     </tr>
+
                   </tbody>
                </table>
             </div>
@@ -83,25 +106,25 @@
       <div class="col-md-9">
          <div class="row">
 
-            <!-- Nouvelle vente -->
+<!--__________________________Nouvelle vente -->
             <div class="col-md-7">
                <div class="container new-sale">
                   <h5>Nouvelle vente</h5>
-                  <!-- formulaire -->
-                  <form action="">
+<!--_______________________________formulaire -->
+                  <form method="POST" action="cible.php">
 
                      <div class="row">
                         <div class="col-md-3">
                            <div class="form-group">
                               <label for="time">Heure</label>
-                              <input type="number" class="form-control" id="" placeholder="00:00" disabled>
+                              <input type="number" class="form-control" id="time" name="time" placeholder="00:00" disabled>
                            </div>
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
                               <label for="villes">Ville</label>
-                              <!-- Menu déroulant -->
-                              <select class="form-control" name="" id="">
+<!--______________________________Menu déroulant -->
+                              <select class="form-control" name="city" id="city">
                                  <option value="">Pamiers City</option>
                               </select>
                            </div>
@@ -112,13 +135,29 @@
                         <div class="col-md-3">
                            <div class="form-group">
                               <label for="quantityToAdd">Quantité</label>
-                              <input type="number" class="form-control" id="" placeholder="">
+                              <input type="number" class="form-control" id="qtevente" name="qtevente" placeholder="">
                            </div>
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
                               <label for="itemToAdd">Fruit/Légume</label>
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
+                              <select class="form-control" name="produitvente" id="produitvente">
+                                 <option value="">Orange</option>
+                                 <option value="">Pomme de Terre</option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-3">
+                           <div class="form-group">
+                              <input type="number" class="form-control" id="" placeholder="">
+                           </div>
+                        </div>
+                        <div class="col-md-9">
+                           <div class="form-group">
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -134,7 +173,7 @@
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -150,7 +189,7 @@
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -166,7 +205,7 @@
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -182,7 +221,7 @@
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -198,7 +237,7 @@
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -214,23 +253,7 @@
                         </div>
                         <div class="col-md-9">
                            <div class="form-group">
-                              <!-- Menu déroulant -->
-                              <select class="form-control" name="" id="">
-                                 <option value="">Orange</option>
-                                 <option value="">Pomme de Terre</option>
-                              </select>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-3">
-                           <div class="form-group">
-                              <input type="number" class="form-control" id="" placeholder="">
-                           </div>
-                        </div>
-                        <div class="col-md-9">
-                           <div class="form-group">
-                              <!-- Menu déroulant -->
+<!--______________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -248,27 +271,27 @@
                </div>
             </div>
 
-            <!-- Ajouter/Supprimer/Géomarketing -->
+<!--________________Ajouter/Supprimer/Géomarketing -->
             <div class="col-md-5 right-panel">
 
-               <!-- Ajouter - Nouvelle entrée dans le stock -->
+<!--_______________Ajouter - Nouvelle entrée dans le stock -->
                <h5>Nouvelle entrée dans le stock</h5>
-               <!-- formulaire -->
-               <form action="">
+<!--__________________________formulaire -->
+               <form method="POST" action="cible.php">
                   <div class="container">
                      <div class="row">
 
                         <div class="col-md-4">
                            <div class="form-group">
                               <label for="quantityToAdd">Quantité</label>
-                              <input type="number" class="form-control" id="" placeholder="">
+                              <input type="number" class="form-control" name='qteperte' id="qteperte" placeholder="">
                            </div>
                         </div>
                         <div class="col-md-8">
                            <div class="form-group">
                               <label for="itemToAdd">Fruit/Légume</label>
-                              <!-- Menu déroulant -->
-                              <select class="form-control" name="" id="">
+<!--________________________Menu déroulant -->
+                              <select class="form-control" name="produitperte" id="produitperte">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
                               </select>
@@ -281,9 +304,9 @@
                   </div>
                </form>
 
-               <!-- Supprimer - Quantité perdue/jetée -->
+<!--______________________Supprimer - Quantité perdue/jetée -->
                <h5>Quantité perdue/jetée</h5>
-               <!-- formulaire -->
+<!--_______________________formulaire -->
                <form action="">
                   <div class="container">
                      <div class="row">
@@ -297,7 +320,7 @@
                         <div class="col-md-8">
                            <div class="form-group">
                               <label for="itemToRemove">Fruit/Légume</label>
-                              <!-- Menu déroulant -->
+<!--________________________Menu déroulant -->
                               <select class="form-control" name="" id="">
                                  <option value="">Orange</option>
                                  <option value="">Pomme de Terre</option>
@@ -311,7 +334,7 @@
                   </div>
                </form>
 
-               <!-- Geomarketing -->
+<!--_______________________________Geomarketing -->
                <div class="row">
                   <div class="col-md-9 geo-title">
                      <h5>
